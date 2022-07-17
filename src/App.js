@@ -3,6 +3,11 @@ import { Grid, Icon, Image, Dropdown, Menu, Transition } from 'semantic-ui-react
 
 import './App.css'
 import avatar from './avatar.jpeg'
+import About from './About/About'
+import Education from './Education/Education'
+import Experience from './Experience/Experience'
+import Projects from './Projects/Projects'
+import Blog from './Blog/Blog'
 
 function App() {
   const [activeItem, setActiveItem] = useState(null)
@@ -10,18 +15,45 @@ function App() {
   const [contentVisible, setContentVisible] = useState(false)
   const [homeVisible, setHomeVisible] = useState(true)
   const [homeInCenter, setHomeInCenter] = useState(true)
+  const [contentObj, setContentObj] = useState({content: null, className: ''})
+
+  const contentMap = {
+    about: {
+      jsx: <About/>,
+      className: 'content-about'
+    },
+    education: {
+      jsx: <Education/>,
+      className: 'content-education'
+    },
+    experience: {
+      jsx: <Experience/>,
+      className: 'content-experience'
+    },
+    projects: {
+      jsx: <Projects/>,
+      className: 'content-projects'
+    },
+    blog: {
+      jsx: <Blog/>,
+      className: 'content-blog'
+    }
+  }
 
   const handleItemClick = (e, {name}) => {
     setActiveItem(name)
-    setContentVisible(true)
+    setContentObj(contentMap[name])
+
     if (homeInCenter) {
+      setHomeWidth(15)
+      setContentVisible(true)
       setHomeVisible(false)
     }
   }
 
   const handleHomeHide = () => {
-    setHomeInCenter(false)
     setHomeWidth(6)
+    setHomeInCenter(false)
   }
 
   const homeJSX = (
@@ -45,19 +77,19 @@ function App() {
           </Grid.Row>
           <Grid.Row>
             <Grid.Column>
-              <Icon.Group circular size='large'>
+              <Icon.Group size='large'>
                 <Icon name='facebook f' circular/>
               </Icon.Group>
-              <Icon.Group circular size='large'>
+              <Icon.Group size='large'>
                 <Icon name='twitter' circular/>
               </Icon.Group>
-              <Icon.Group circular size='large'>
+              <Icon.Group size='large'>
                 <Icon name='linkedin' circular/>
               </Icon.Group>
-              <Icon.Group circular size='large'>
+              <Icon.Group size='large'>
                 <Icon name='github' circular/>
               </Icon.Group>
-              <Icon.Group circular size='large'>
+              <Icon.Group size='large'>
                 <Icon name='instagram' circular/>
               </Icon.Group>
             </Grid.Column>
@@ -108,7 +140,7 @@ function App() {
   return (
     <Grid>
       {homeInCenter ? 
-        <Transition animation='fade right' duration={100} visible={homeVisible} onHide={handleHomeHide}>
+        <Transition animation='fade right' duration={500} visible={homeVisible} onHide={handleHomeHide}>
           <Grid.Column width={homeWidth}>
             {homeJSX}
           </Grid.Column>
@@ -117,11 +149,13 @@ function App() {
           {homeJSX}
         </Grid.Column>
       }
-      <Transition animation='fade left' duration={1000} visible={contentVisible}>
-        <Grid.Column width={16-homeWidth} className='content-container'>
-
-        </Grid.Column>
-      </Transition>
+      {contentVisible ?
+        <Transition animation='fade left' duration={5000} visible={contentVisible}>
+          <Grid.Column width={16-homeWidth} className={contentObj['className']}>
+            {contentObj['jsx']}
+          </Grid.Column>
+        </Transition> : null
+      }
     </Grid>
   )
 }
